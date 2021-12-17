@@ -3,19 +3,209 @@
 <head>
   <title>CoderArt</title>
   <link rel="icon" href="coderart.png" type="image/x-icon">
+  <!-- Codemirror CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.css"
+    integrity="sha512-xIf9AdJauwKIVtrVRZ0i4nHP61Ogx9fSRAkCLecmE2dL/U8ioWpDvFCAy4dcfecN72HHB9+7FfQj3aiO68aaaw=="
+    crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/theme/seti.min.css"
+    integrity="sha512-A7KLVdYbXryV98af9mTrVoUPuUuq94hkMjPgzHnrfi6QZbq9ylrgbRKp31/DQ8qareLzA3e56/VmIrrQlaDAqw=="
+    crossorigin="anonymous" />
+  <style>
+    .CodeMirror {
+      height: auto;
+      min-height: 1;
+    }
+  </style>
   <!-- Our Styles -->
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/masonry.css">
   <insert-html link="https://swag31415.github.io/Portfolio/inserts/head.html"></insert-html>
 </head>
 
 <body>
   <insert-html link="https://swag31415.github.io/Portfolio/inserts/menu.html"></insert-html>
   <main class="container">
-    <!-- TODO Add body -->
+    <h1>Coder Art</h1>
+    <div class="row">
+      <div class="col s12 m6 l4">
+        <div class="card">
+          <div id="artbox" class="card-image"></div>
+        </div>
+      </div>
+      <div class="input-field col s4 m2">
+        <input id="width" class="validate" type="number" value="500" min="1" required>
+        <label for="width">width</label>
+        <span class="helper-text" data-error="Please enter a positive integer"></span>
+      </div>
+      <div class="input-field col s4 m2">
+        <input id="height" class="validate" type="number" value="500" min="1" required>
+        <label for="height">height</label>
+        <span class="helper-text" data-error="Please enter a positive integer"></span>
+      </div>
+      <div class="input-field col s4 m2">
+        <input id="n_runs" class="validate" type="number" value="1" min="1" required>
+        <label for="n_runs">number of runs</label>
+        <span class="helper-text" data-error="Please enter a positive integer"></span>
+      </div>
+      <textarea id="editor" class="code col s12 m6">// CODE THE ART!!!</textarea>
+    </div>
+    <div>
+      <h4>How to use</h4>
+      <div class="row">
+        <ol class="col s12 m6">
+          <li>Set the width and height of the image in pixels.</li>
+          <li>Set the number of runs (set this to one if you're confused)</li>
+          <li>Enter javascript code in the box and press run.</li>
+        </ol>
+        <textarea class="code col s12 m6">return rgb(255, 0, 0)</textarea>
+      </div>
+      <h4>How it works</h4>
+      <div class="row">
+        <ul class="col s12 m6 browser-default">
+          <li>The javascript code in the box is a function.</li>
+          <li>It is run for every pixel in the image.</li>
+          <li>The function must return a color.</li>
+          <li>Colors are represented as an array of four numbers.</li>
+          <li>You are provided many functions and variables so you can focus on the art!</li>
+        </ul>
+        <textarea class="code col s12 m6">if (x**2 + y**2 < 400**2)
+  return hsv(x/w, 1, 1)
+else
+  return rgb(0, 0, 0)</textarea>
+      </div>
+      <h4>Examples</h4>
+      <div class="masonry ml2">
+        <textarea class="code">white = rgb(255, 255, 255)
+xor = (a, b) => a ? !b : b
+up = rel(0, -1); left = rel(-1, 0)
+if ((!x && !y) || xor(eq(up, white), eq(left, white)))
+  return white
+else return rgb(0, 0, 0)</textarea>
+        <textarea class="code">x=(x/w)-0.5;y=0.5-(y/h)
+r=Math.sqrt(x**2+y**2)*1.5
+t=Math.atan(y/x) + (x&lt0 ? Math.PI : (y&lt0 ? 2*Math.PI : 0))
+d=2*r+5+Math.cos(3*r*t)
+p=Math.floor((r+d*0.5)*10)/10
+return hsv(p,1,1)</textarea>
+        <textarea class="code">x = x-(w/2); y = y-(h/2);
+d = x**2 + y**2 + (9**5)*Math.cos(x*y);
+m = (w/2)**2 + (h/2)**2;
+g = Math.floor((d/m)*10)/10;
+return hsv(g,1,1)</textarea>
+        <textarea class="code">// Try running this one multiple times
+if (!x && !y) p = 1+Math.random()
+v = Math.sin(p*x*y)
+return v &lt 0.1 ?
+  rgb(255, 247, 48) : cmy(255, 247, 48)</textarea>
+        <textarea class="code">if (!x && !y) {
+ rand = n => Math.floor(Math.random() * n * 2) - n
+ randf = () => 2*Math.random() - 1
+ randb = () => Math.random() &lt 0.618
+ pts = Array.from({length:69},
+  () => [randb()?rand(3):randf(), rand(h)])
+}
+lin = (m, b) => Math.abs(((h/2)-y)-(m*(x-(w/2))+b))
+v = Math.min(...pts.map(v => lin(...v)))
+return hsv(0,0,v)</textarea>
+        <textarea class="code">if (!x && !y) {
+ rand = n => Math.floor(Math.random()*n)
+ pts = Array.from({length:20}, () => [rand(w),rand(h)])
+ dst = (x1,y1,x2,y2) => (x1-x2)**2 + (y1-y2)**2
+ argmin = arr => arr.map((x,i) => [x,i]).reduce((r,a) => (a[0]&ltr[0]?a:r));
+}
+[d,v] = argmin(pts.map(v => dst(x,y,...v)))
+return hsv(v/20,1,1-d/3e4)</textarea>
+        <textarea class="code">if (!x && !y) {
+ rand = n => Math.floor(Math.random()*n)
+ pts = Array.from({length:20}, () => [rand(w),rand(h)])
+ dst = (x1,y1,x2,y2) => (x1-x2)**2 + (y1-y2)**2
+}
+v = Math.min(...pts.map(v => dst(x,y,...v)))
+return hsv(1,1,v/1e4)</textarea>
+        <textarea class="code">if (!x && !y) {
+  trms = Array.from({length:10}, () => Math.random()*10)
+  g = t => trms.map(v => Math.sin(t*v)).reduce((a,b) => a+b)
+}
+x=(x/w)-0.5;y=0.5-(y/h)
+r=Math.sqrt(x**2+y**2)
+t=Math.atan(y/x) + (x&lt0 ? Math.PI : (y&lt0 ? 2*Math.PI : 0))
+d=Math.sqrt(Math.abs(g(t)/15 - r))*255
+return rgb(d*0.9,d,d)</textarea>
+      </div>
+      <h4>Provided Functions and Variables</h4>
+      <table>
+        <thead>
+          <th>Name</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>rgb(r, g, b, a = 255)</code></td>
+            <td>Use this to make <span style="color: red;">R</span><span style="color: green;">G</span><span style="color: blue;">B</span> colors. Use <code>a</code> for alpha or opacity. All numbers are between <code>0</code> and <code>255</code>.</td>
+          </tr>
+          <tr>
+            <td><code>cmy(c, m, y, k = 0)</code></td>
+            <td>Essentially the opposite of <code>rgb</code>. Use this to make <span style="color: cyan;">C</span><span style="color: magenta;">M</span><span style="color: yellow;">Y</span> colors. Use <code>k</code> for transparency. All numbers are between <code>0</code> and <code>255</code>.</td>
+          </tr>
+          <tr>
+            <td><code>hsv(h, s, v, a = 1)</code></td>
+            <td>Stands for hue, saturation, value. The hue is the color; saturation is the shade; value is the brightness. Use <code>a</code> for alpha or opacity. All numbers are between <code>0</code> and <code>1</code>.</td>
+          </tr>
+          <tr>
+            <td><code>eq(a, b)</code></td>
+            <td>Use this to check if two colors, <code>a</code> and <code>b</code>, are equal. <code>a == b</code> <strong>DOES NOT WORK</strong>. This is because javascript sucks.</td>
+          </tr>
+          <tr>
+            <td><code>clamp(number, low, high)</code></td>
+            <td>Use this to force a number between <code>low</code> and <code>high</code>. This is the same as <code>Math.max(high, Math.min(low, number))</code></td>
+          </tr>
+          <tr>
+            <td><code>get(x, y)</code></td>
+            <td>Use this to get the color of the pixel located at <code>x, y</code>. If <code>x, y</code> is outside of the image then it returns the closest pixel inside the image.</td>
+          </tr>
+          <tr>
+            <td><code>rel(dx, dy)</code></td>
+            <td>A relative version of <code>get(x, y)</code>. This is the same as <code>get(x+dx, y+dy)</code></td>
+          </tr>
+          <tr>
+            <td><code>x</code></td>
+            <td>The <code>x</code>-value of the current pixel. <code>x</code> is <code>0</code> on the left and increases as you move right</td>
+          </tr>
+          <tr>
+            <td><code>y</code></td>
+            <td>The <code>y</code>-value of the current pixel. <code>y</code> is <code>0</code> at the top and increases as you move down</td>
+          </tr>
+          <tr>
+            <td><code>w</code></td>
+            <td>Gets the width of the image in pixels. This is the value you set above</td>
+          </tr>
+          <tr>
+            <td><code>h</code></td>
+            <td>Gets the height of the image in pixels. This is the value you set above</td>
+          </tr>
+          <tr>
+            <td><code>i</code></td>
+            <td>Gets the current iteration or round. The first round is <code>0</code>, the second is <code>1</code> and so on. This only applies if you set the number of rounds to more than one.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </main>
   <insert-html link="https://swag31415.github.io/Portfolio/inserts/foot.html"></insert-html>
   <!-- HTML Inserts -->
   <script src="https://swag31415.github.io/Portfolio/js/html_inserts.js"></script>
+  <!-- Jquery Slim -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+  <!-- CodeMirror Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.js"
+    integrity="sha512-zuvaVNiXwWY7U7HEdXsoTislTEElpKLELFoyQw0Bg7zfGhC4vG8eAhCxIQAvHmprW7dFhTq5zshUko4K3B4mSA=="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/mode/javascript/javascript.min.js"
+    integrity="sha512-EKqHN1wvffwb5Hx+y5JeXPGNDKKxxW1Es4hexkgSf+QkQwEDNs6bp4KKCRNVLUbRPGkrDQ7yEVwvDg1tq7n1fA=="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/addon/hint/javascript-hint.min.js"
+    integrity="sha512-2zi+0HSB5MXoy+BenDX/EKjqN6eUnsG2Lh9cpx+Ckua3Yi2XupO8ife9VELSg8iR7AT98yHQNyyaAL4ImVHcoQ=="
+    crossorigin="anonymous"></script>
   <!-- Our Scripts -->
   <script src="js/main.js"></script>
 </body>
