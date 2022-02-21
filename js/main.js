@@ -18,6 +18,12 @@ const hsv = (h, s, v, a = 1) => { // Create a hsv color
   }
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), Math.round(a * 255)]
 }
+const hex = (s) => { // Parse a hex string
+  m = s.match(/^#?([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})?$/i)
+  if (m) return [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16), parseInt(m[4] || 'ff', 16)]
+  m = s.match(/^#?([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])?$/i)
+  if (m) return [parseInt(m[1], 16)*0x11, parseInt(m[2], 16)*0x11, parseInt(m[3], 16)*0x11, parseInt(m[4] || 'f', 16)*0x11]
+}
 const eq = (a, b) => // To compare colors
   a.length === b.length && a.every((v, i) => v === b[i]);
 const clamp = (n, low, high) => n > high ? high : (n < low ? low : n)
