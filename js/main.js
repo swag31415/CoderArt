@@ -27,13 +27,43 @@ const hex = (s) => { // Parse a hex string
 const eq = (a, b) => // To compare colors
   a.length === b.length && a.every((v, i) => v === b[i]);
 const clamp = (n, low, high) => n > high ? high : (n < low ? low : n)
+// ------------------------- Image Loading --------------------------- //
+const upload = () => new Promise(res => {
+  let input = document.createElement('input')
+  input.type = 'file'
+  input.accept = 'image/*'
+  input.onchange = e => {
+    let reader = new FileReader()
+    reader.onload = e => {
+      let img = document.createElement('img')
+      img.onload = () => {
+        let ctx = document.createElement("canvas").getContext("2d")
+        ctx.canvas.width = img.width
+        ctx.canvas.height = img.height
+        ctx.drawImage(img, 0, 0, img.width, img.height)
+        let data = ctx.getImageData(0, 0, img.width, img.height)
+        let arr = Array.from({length: data.height}, (_,y) =>
+          Array.from({length: data.width}, (_,x) =>
+            Array.from({length: 4}, (_,i) =>
+              data.data[(y*img.width*4) + (x*4) + i]
+        )))
+        res(arr)
+      }
+      img.src = e.target.result
+    }
+    reader.readAsDataURL(e.target.files[0])
+  }
+  input.click()
+})
 // ------------------------------------------------------------------- //
 
-function update_image(code) {
+// This is silly hehe
+const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
+async function update_image(code) {
   // Get parameters
-  w = $("#width").val()
-  h = $("#height").val()
-  n_runs = $("#n_runs").val()
+  let w = $("#width").val()
+  let h = $("#height").val()
+  let n_runs = $("#n_runs").val()
 
   // Create the image
   var img = new Uint8ClampedArray(4 * w * h)
@@ -41,22 +71,22 @@ function update_image(code) {
   // Initialize access methods
   let calc = (x, y) => 4 * (y * w + x)
   let get = (x, y) => {
-    idx = calc(clamp(x, 0, w), clamp(y, 0, h))
+    let idx = calc(clamp(x, 0, w), clamp(y, 0, h))
     return [img[idx], img[idx + 1], img[idx + 2], img[idx + 3]]
   }
 
   // The user's code
-  func = Function('x', 'y', 'i', 'w', 'h', 'get', 'rel', code)
+  let func = AsyncFunction('x', 'y', 'i', 'w', 'h', 'get', 'rel', code)
 
   for (let i = 0; i < n_runs; i++) {
     for (let y = 0; y < w; y++) {
       for (let x = 0; x < h; x++) {
         // Run the user's function and calculate
-        pix = func(x, y, i, w, h, get, (dx, dy) => get(x+dx, y+dy))
+        let pix = await func(x, y, i, w, h, get, (dx, dy) => get(x+dx, y+dy))
         get(x, y) // idk why this is needed but it works. TODO figure it out
 
         // Assign the pixel values
-        idx = calc(x, y)
+        let idx = calc(x, y)
         img[idx + 0] = pix[0]
         img[idx + 1] = pix[1]
         img[idx + 2] = pix[2]
@@ -66,7 +96,7 @@ function update_image(code) {
   }
 
   let img_data = new ImageData(img, w, h)
-  canvas = document.createElement("canvas")
+  let canvas = document.createElement("canvas")
   canvas.width = w
   canvas.height = h
   canvas.getContext("2d").putImageData(img_data, 0, 0)
