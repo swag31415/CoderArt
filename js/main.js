@@ -79,12 +79,10 @@ async function update_image(code) {
   let func = AsyncFunction('x', 'y', 'i', 'w', 'h', 'get', 'rel', code)
 
   for (let i = 0; i < n_runs; i++) {
-    for (let y = 0; y < w; y++) {
-      for (let x = 0; x < h; x++) {
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
         // Run the user's function and calculate
         let pix = await func(x, y, i, w, h, get, (dx, dy) => get(x+dx, y+dy))
-        get(x, y) // idk why this is needed but it works. TODO figure it out
-
         // Assign the pixel values
         let idx = calc(x, y)
         img[idx + 0] = pix[0]
