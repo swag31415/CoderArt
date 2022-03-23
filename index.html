@@ -132,6 +132,21 @@ r=Math.sqrt(x**2+y**2)
 t=Math.atan(y/x) + (x&lt0 ? Math.PI : (y&lt0 ? 2*Math.PI : 0))
 d=Math.sqrt(Math.abs(g(t)/15 - r))*255
 return rgb(d*0.9,d,d)</textarea>
+        <textarea class="code">if (!x && !y && !i) {
+  // This one takes in an image!
+  window.imp = await upload()
+ 	window.lis = [-1, 0, 1]
+  window.kern = [[1, 0, 1], [0, -4, 0], [1, 0, 1]].flat()
+  window.grey = p => (0.299*p[0]) + (0.587*p[1]) + (0.114*p[2])
+}
+if (i == 0) {
+	return imp[y][x]
+} else if (i == 1) {
+  res = lis
+    .flatMap(dx => lis.map(dy => rel(dx, dy)))
+    .reduce((s,v,i) => s + (grey(v) * kern[i]), 0)
+  return hsv(0, 0, res)
+}</textarea>
       </div>
       <h4>Provided Functions and Variables</h4>
       <table>
