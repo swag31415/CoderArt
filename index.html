@@ -136,17 +136,16 @@ return rgb(d*0.9,d,d)</textarea>
   // This one takes in an image!
   window.imp = await upload()
  	window.lis = [-1, 0, 1]
-  window.kern = [[1, 0, 1], [0, -4, 0], [1, 0, 1]].flat()
-  window.grey = p => (0.299*p[0]) + (0.587*p[1]) + (0.114*p[2])
+  window.kern = [[1, 0, 1],
+                 [0,-4, 0],
+                 [1, 0, 1]].flat()
+  window.grey = p => [.299,.587,.114]
+    .reduce((s,v,i) => s + (v * (p[i]/255)), 0)
 }
-if (i == 0) {
-	return imp[y][x]
-} else if (i == 1) {
-  res = lis
-    .flatMap(dx => lis.map(dy => rel(dx, dy)))
-    .reduce((s,v,i) => s + (grey(v) * kern[i]), 0)
-  return hsv(0, 0, res)
-}</textarea>
+res = lis.flatMap(dx => lis.map(dy =>
+  imp[clamp(y+dy,0,h-1)][clamp(x+dx,0,w-1)]))
+  .reduce((s,v,i) => s + (grey(v) * kern[i]), 0)
+return hsv(0, 0, res)</textarea>
       </div>
       <h4>Provided Functions and Variables</h4>
       <table>
