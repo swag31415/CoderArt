@@ -102,15 +102,14 @@ return v &lt 0.1 ?
  rand = n => Math.floor(Math.random() * n * 2) - n
  randf = () => 2*Math.random() - 1
  randb = () => Math.random() &lt 0.618
- pts = Array.from({length:69},
-  () => [randb()?rand(3):randf(), rand(h)])
+ pts = arr([69], () => [randb()?rand(3):randf(), rand(h)])
 }
 lin = (m, b) => Math.abs(((h/2)-y)-(m*(x-(w/2))+b))
 v = Math.min(...pts.map(v => lin(...v)))
 return hsv(0,0,v)</textarea>
         <textarea class="code">if (!x && !y) {
  rand = n => Math.floor(Math.random()*n)
- pts = Array.from({length:20}, () => [rand(w),rand(h)])
+ pts = arr([20], () => [rand(w),rand(h)])
  dst = (x1,y1,x2,y2) => (x1-x2)**2 + (y1-y2)**2
  argmin = arr => arr.map((x,i) => [x,i]).reduce((r,a) => (a[0]&ltr[0]?a:r));
 }
@@ -118,13 +117,13 @@ return hsv(0,0,v)</textarea>
 return hsv(v/20,1,1-d/3e4)</textarea>
         <textarea class="code">if (!x && !y) {
  rand = n => Math.floor(Math.random()*n)
- pts = Array.from({length:20}, () => [rand(w),rand(h)])
+ pts = arr([20], () => [rand(w),rand(h)])
  dst = (x1,y1,x2,y2) => (x1-x2)**2 + (y1-y2)**2
 }
 v = Math.min(...pts.map(v => dst(x,y,...v)))
 return hsv(1,1,v/1e4)</textarea>
         <textarea class="code">if (!x && !y) {
-  trms = Array.from({length:10}, () => Math.random()*10)
+  trms = arr([10], () => Math.random()*10)
   g = t => trms.map(v => Math.sin(t*v)).reduce((a,b) => a+b)
 }
 x=(x/w)-0.5;y=0.5-(y/h)
@@ -189,6 +188,10 @@ return hsv(0, 0, res)</textarea>
           <tr>
             <td><code>await upload()</code></td>
             <td>Lets you upload your own image and store it as an array. Access pixels like <code>foo[y][x]</code> where <code>foo</code> is what you named the array and <code>x, y</code> are the coordinates of the pixel.</td>
+          </tr>
+          <tr>
+            <td><code>arr([d1,d2], (i,j) => {})</code></td>
+            <td>Creates an array with dimensions <code>d1</code>, <code>d2</code>, etc. and initializes them with a function that takes the indicies as an argument.</td>
           </tr>
           <tr>
             <td><code>x</code></td>

@@ -28,6 +28,12 @@ const eq = (a, b) => // To compare colors
   a.length === b.length && a.every((v, i) => v === b[i]);
 const clamp = (n, low, high) => n > high ? high : (n < low ? low : n)
 // ------------------------- Image Loading --------------------------- //
+const arr = (dims, f) => {
+  let [n, ...others] = dims
+  return Array.from({length: n}, (_,i) => (
+    others.length > 0 ? arr(others, (...p) => f(i, ...p)) : f(i)
+  ))
+}
 const upload = () => new Promise(res => {
   let input = document.createElement('input')
   input.type = 'file'
@@ -42,12 +48,7 @@ const upload = () => new Promise(res => {
         ctx.canvas.height = img.height
         ctx.drawImage(img, 0, 0, img.width, img.height)
         let data = ctx.getImageData(0, 0, img.width, img.height)
-        let arr = Array.from({length: data.height}, (_,y) =>
-          Array.from({length: data.width}, (_,x) =>
-            Array.from({length: 4}, (_,i) =>
-              data.data[(y*img.width*4) + (x*4) + i]
-        )))
-        res(arr)
+        res(arr([data.height, data.width, 4], (y, x, i) => data.data[(y*img.width*4) + (x*4) + i]))
       }
       img.src = e.target.result
     }
