@@ -58,6 +58,10 @@ async function update_image(code, w, h, n_runs) {
   }
   // The user's code
   let func = AsyncFunction('x', 'y', 'i', 'w', 'h', 'get', 'rel', code)
+  // Progress Tracking
+  let loops = n_runs * h * w
+  let loop = 0
+  let last_post = Date.now()
   // The Mega Loop
   for (let i = 0; i < n_runs; i++) {
     for (let y = 0; y < h; y++) {
@@ -70,6 +74,11 @@ async function update_image(code, w, h, n_runs) {
         img[idx + 1] = pix[1]
         img[idx + 2] = pix[2]
         img[idx + 3] = pix[3]
+        loop += 1
+        if (Date.now() - last_post > 2000) {
+          self.postMessage(['progress', loop / loops])
+          last_post = Date.now()
+        }
       }
     }
   }

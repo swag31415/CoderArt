@@ -41,6 +41,7 @@ worker.addEventListener('message', function(e) {
   let [task, ...rest] = e.data
   if (task == 'display') display(...rest)
   else if (task == 'upload') upload().then(d => worker.postMessage(['upload-done', d]))
+  else if (task == 'progress') M.toast({html: Math.round(rest[0] * 100) + '% done', classes: 'green'})
 }, false)
 
 worker.addEventListener('error', function (e) {
