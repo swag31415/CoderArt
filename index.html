@@ -145,6 +145,30 @@ res = lis.flatMap(dx => lis.map(dy =>
   imp[clamp(y+dy,0,h-1)][clamp(x+dx,0,w-1)]))
   .reduce((s,v,i) => s + (grey(v) * kern[i]), 0)
 return hsv(0, 0, res)</textarea>
+        <textarea class="code">if (!x && !y && !i) {
+  dst2 = (x1,y1) => (x2,y2) => (x2-x1)**2 + (y2-y1)**2
+  dst = (x1,y1) => (x2,y2) => Math.sqrt(dst2(x1,y1)(x2,y2))
+  lin = (x0,y0,x1,y1,x2,y2) => {
+    l2 = dst2(x1,y1)(x2,y2)
+    if (l2 == 0) return dst(x0,y0)(x1,y1)
+    t = clamp(((x0-x1)*(x2-x1)+(y0-y1)*(y2-y1))/l2, 0, 1)
+    return dst(x0,y0)(x1+t*(x2-x1),y1+t*(y2-y1))
+  }
+  comet = (x1,y1,x2,y2) => {
+    let rc = Math.random()
+    return (x,y) => [lin(x,y,x1,y1,x2,y2), dst(x1,y1)(x,y)/dst(x1,y1)(x2,y2), rc]
+  }
+  n = 20
+  let [sw,sh] = [w/(n+1),h/(n+1)]
+  rand = n => Math.floor(Math.random()*n)
+  lines = arr([n,n], (i,j) => {
+  	let [x0,y0] = [sw*(i+1),sh*(j+1)]
+    return comet(x0,y0,x0+rand(sw)-(sw/2),y0+rand(sh)-(sh/2))
+  }).flat()
+}
+res = lines.map(l => l(x,y))
+for ([lin_p,dst_p,rc] of res) if (lin_p &lt 2) return hsv(rc,1,dst_p)
+return hex('000')</textarea>
       </div>
       <h4>Provided Functions and Variables</h4>
       <table>
