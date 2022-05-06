@@ -17,7 +17,7 @@
       height: auto;
       min-height: 1;
     }
-  </style>
+  </style>  
   <!-- Our Styles -->
   <link rel="stylesheet" href="css/masonry.css">
   <insert-html link="https://swag31415.github.io/Portfolio/inserts/head.html"></insert-html>
@@ -48,6 +48,17 @@
         <label for="n_runs">number of runs</label>
         <span class="helper-text" data-error="Please enter a positive integer"></span>
       </div>
+      <div class="animation input-field col s4 m2" style="display: none;">
+        <input id="frames" class="validate" type="number" value="1" min="1" required>
+        <label for="frames">number of frames</label>
+        <span class="helper-text" data-error="Please enter a positive integer"></span>
+      </div>
+      <div class="animation input-field col s4 m2" style="display: none;">
+        <!-- I don't expect much slower than this, that's about 32 years per frame -->
+        <input id="fps" class="validate" type="number" value="24" min="0.000000001" step="any" required>
+        <label for="fps">frames per second</label>
+        <span class="helper-text" data-error="Please enter a positive number"></span>
+      </div>
       <textarea id="editor" class="code col s12 m6">// CODE THE ART!!!</textarea>
     </div>
     <div>
@@ -68,8 +79,10 @@
           <li>The function must return a color.</li>
           <li>Colors are represented as an array of four numbers.</li>
           <li>You are provided many functions and variables so you can focus on the art!</li>
+          <li>You can even animate! Click the button below to do that.</li>
+        <br class="animation"></br><button class="animation btn purple">Animate!</button>
         </ul>
-        <textarea class="code col s12 m6">if (x**2 + y**2 < 400**2)
+        <textarea class="code col s12 m6">if (x**2 + y**2 &lt 400**2)
   return hsv(x/w, 1, 1)
 else
   return rgb(0, 0, 0)</textarea>

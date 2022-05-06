@@ -1,15 +1,32 @@
 // DOM functions
-function display(img_data, w, h) {
-  // Put it on a canvas
-  let canvas = document.createElement("canvas")
-  canvas.width = w
-  canvas.height = h
-  canvas.getContext("2d").putImageData(img_data, 0, 0)
-  // Put the canvas on the screen
-  $("#artbox").html(`<img src="${canvas.toDataURL()}">`)
-  // Scroll to the art
-  document.body.scrollTop = 0; // For Safari
-  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+var interval = null;
+var frame = 0
+function display(fs, w, h) {
+  function scroll() {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  }
+  function disp(img_data, w, h) {
+    // Put it on a canvas
+    let canvas = document.createElement("canvas")
+    canvas.width = w
+    canvas.height = h
+    canvas.getContext("2d").putImageData(img_data, 0, 0)
+    // Put the canvas on the screen
+    $("#artbox").html(`<img src="${canvas.toDataURL()}">`)
+  }
+  if (fs.length == 1){
+    disp(fs[0], w, h)
+    scroll()
+  } else {
+    clearInterval(interval)
+    frame = 0
+    interval = setInterval(() => {
+      frame = (frame + 1) % fs.length
+      disp(fs[frame], w, h)
+    }, 1000 / $('#fps').val())
+    scroll()
+  }
 }
 
 const upload = () => new Promise(res => {
@@ -69,6 +86,13 @@ $("textarea.code").each((i, v) => {
     .appendTo(cm.display.wrapper)
     .click(() => {
       // Send it to the worker
-      worker.postMessage(['run', cm.getValue(), $("#width").val(), $("#height").val(), $("#n_runs").val()])
+      worker.postMessage(['run', cm.getValue(), $("#width").val(), $("#height").val(), $("#n_runs").val(), animode ? $('#frames').val() : 1])
     })
+})
+
+// The Animation Button
+var animode = false
+$('.animation.btn').click(e => {
+  animode = !animode
+  $('.animation').toggle()
 })

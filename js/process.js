@@ -47,42 +47,48 @@ const upload = async () => {
 
 // This is silly hehe
 const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
-async function update_image(code, w, h, n_runs) {
-  // Create the image
-  var img = new Uint8ClampedArray(4 * w * h)
+async function update_image(code, w, h, n_runs, frames) {
   // Initialize access methods
   let calc = (x, y) => 4 * (y * w + x)
-  let get = (x, y) => {
+  let iget = (img) => (x, y) => {
     let idx = calc(clamp(x, 0, w), clamp(y, 0, h))
     return [img[idx], img[idx + 1], img[idx + 2], img[idx + 3]]
   }
   // The user's code
-  let func = AsyncFunction('x', 'y', 'i', 'w', 'h', 'get', 'rel', code)
+  let func = AsyncFunction('x', 'y', 'i', 'f', 'w', 'h', 'get', 'rel', code)
   // Progress Tracking
-  let loops = n_runs * h * w
+  let loops = frames * n_runs * h * w
   let loop = 0
   let last_post = Date.now()
+  // Frame Stack
+  let fs = []
   // The Mega Loop
-  for (let i = 0; i < n_runs; i++) {
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        // Run the user's function and calculate
-        let pix = await func(x, y, i, w, h, get, (dx, dy) => get(x+dx, y+dy))
-        // Assign the pixel values
-        let idx = calc(x, y)
-        img[idx + 0] = pix[0]
-        img[idx + 1] = pix[1]
-        img[idx + 2] = pix[2]
-        img[idx + 3] = pix[3]
-        loop += 1
-        if (Date.now() - last_post > 2000) {
-          self.postMessage(['progress', loop / loops])
-          last_post = Date.now()
+  for (let f = 0; f < frames; f++) {
+    // Create the image and define the getter
+    let img = new Uint8ClampedArray(4 * w * h)
+    let get = iget(img)
+    for (let i = 0; i < n_runs; i++) {
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          // Run the user's function and calculate
+          let pix = await func(x, y, i, f, w, h, get, (dx, dy) => get(x+dx, y+dy))
+          // Assign the pixel values
+          let idx = calc(x, y)
+          img[idx + 0] = pix[0]
+          img[idx + 1] = pix[1]
+          img[idx + 2] = pix[2]
+          img[idx + 3] = pix[3]
+          loop += 1
+          if (Date.now() - last_post > 2000) {
+            self.postMessage(['progress', loop / loops])
+            last_post = Date.now()
+          }
         }
       }
     }
+    fs.push(new ImageData(img, w, h))
   }
-  return [new ImageData(img, w, h), w, h]
+  return [fs, w, h]
 }
 
 self.addEventListener('message', function(e) {
