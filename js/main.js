@@ -1,30 +1,38 @@
 // DOM functions
-var interval = null;
-var frame = 0
+
+const get_url = (img_data, w, h) => {
+  let canvas = document.createElement("canvas")
+  canvas.width = w
+  canvas.height = h
+  canvas.getContext("2d").putImageData(img_data, 0, 0)
+  return canvas.toDataURL()
+}
+
 function display(fs, w, h) {
+  let us = fs.map(f => get_url(f, w, h))
   function scroll() {
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
   }
-  function disp(img_data, w, h) {
-    // Put it on a canvas
-    let canvas = document.createElement("canvas")
-    canvas.width = w
-    canvas.height = h
-    canvas.getContext("2d").putImageData(img_data, 0, 0)
-    // Put the canvas on the screen
-    $("#artbox").html(`<img src="${canvas.toDataURL()}">`)
-  }
-  if (fs.length == 1){
-    disp(fs[0], w, h)
+  if (us.length == 1) {
+    $("#artbox").html(`<img src="${us[0]}">`)
     scroll()
   } else {
-    clearInterval(interval)
-    frame = 0
-    interval = setInterval(() => {
-      frame = (frame + 1) % fs.length
-      disp(fs[frame], w, h)
-    }, 1000 / $('#fps').val())
+    gifshot.createGIF({
+      gifWidth: w,
+      gifHeight: h,
+      images: us,
+      numFrames: us.length,
+      frameDuration: 1 / $('#fps').val(),
+      sampleInterval: 1,
+      numWorkers: 4
+    }, function (obj) {
+      if (!obj.error) {
+        $("#artbox").html(`<img src="${obj.image}">`)
+      } else {
+        console.error(obj.error)
+      }
+    })
     scroll()
   }
 }
