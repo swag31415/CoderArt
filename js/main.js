@@ -18,6 +18,7 @@ function display(fs, w, h) {
     $("#artbox").html(`<img src="${us[0]}">`)
     scroll()
   } else {
+    M.toast({html: 'Frames done, starting rendering...', classes: 'teal'})
     gifshot.createGIF({
       gifWidth: w,
       gifHeight: h,
@@ -29,8 +30,10 @@ function display(fs, w, h) {
     }, function (obj) {
       if (!obj.error) {
         $("#artbox").html(`<img src="${obj.image}">`)
+        M.toast({html: 'Rendering Complete!', classes: 'green'})
       } else {
         console.error(obj.error)
+        M.toast({html: 'Render Error, please try again', classes: 'red'})
       }
     })
     scroll()
