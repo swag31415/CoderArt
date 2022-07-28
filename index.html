@@ -215,12 +215,12 @@ return hex('000')</textarea>
             <td>Use this to force a number between <code>low</code> and <code>high</code>. This is the same as <code>Math.max(high, Math.min(low, number))</code></td>
           </tr>
           <tr>
-            <td><code>get(x, y)</code></td>
-            <td>Use this to get the color of the pixel located at <code>x, y</code>. If <code>x, y</code> is outside of the image then it returns the closest pixel inside the image.</td>
+            <td><code>get(x, y, f)</code></td>
+            <td>Use this to get the color of the pixel located at <code>x, y</code> on frame <code>f</code>. If <code>x, y</code> is outside of the image then it returns the closest pixel inside the image. <code>f</code> can be omitted and is by default the current frame.</td>
           </tr>
           <tr>
-            <td><code>rel(dx, dy)</code></td>
-            <td>A relative version of <code>get(x, y)</code>. This is the same as <code>get(x+dx, y+dy)</code></td>
+            <td><code>rel(dx, dy, df)</code></td>
+            <td>A relative version of <code>get(x, y, f)</code>. This is the same as <code>get(x+dx, y+dy, f-df)</code></td>
           </tr>
           <tr>
             <td><code>await upload()</code></td>
@@ -250,9 +250,9 @@ return hex('000')</textarea>
             <td><code>i</code></td>
             <td>Gets the current iteration or round. The first round is <code>0</code>, the second is <code>1</code> and so on. This only applies if you set the number of rounds to more than one.</td>
           </tr>
-          <tr class="animation" style="display: none">
+          <tr>
             <td><code>f</code></td>
-            <td>Gets the current frame. The first frame is <code>0</code>, the second is <code>1</code> and so on. This only applies if you set the number of frames to more than one.</td>
+            <td>Gets the current frame. The first frame is <code>0</code>, the second is <code>1</code> and so on. This only applies if you set the number of frames to more than one and animation is on.</td>
           </tr>
         </tbody>
       </table>
