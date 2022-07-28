@@ -158,6 +158,38 @@ res = lis.flatMap(dx => lis.map(dy =>
   imp[clamp(y+dy,0,h-1)][clamp(x+dx,0,w-1)]))
   .reduce((s,v,i) => s + (grey(v) * kern[i]), 0)
 return hsv(0, 0, res)</textarea>
+        <textarea class="code">// Try increasing number of runs!
+if (!x && !y && !i) {
+  function trianglesquare([x1, y1], [x2, y2], [x3, y3]) {
+    return (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)
+  }
+  hasoverlap = (l1, l2) => {
+    function overlaphelper([a1, b1], [a2, b2]) {
+      a = trianglesquare(a1, b1, a2)
+      b = trianglesquare(a1, b1, b2)
+      return (a > 0 && b < 0) || (b > 0 && a < 0)
+    }
+    return overlaphelper(l1, l2) && overlaphelper(l2, l1)
+  }
+  pnp = ls => p => {
+    seg = [p, [p[0] + 1e9 + 11, p[1] + 1e9 + 13]]
+    return (ls.filter(l => hasoverlap(l, seg)).length % 2) == 1
+  }
+  rand = n => Math.floor(Math.random() * n)
+  pairs = a => a.map((p, i) => [p, a[(i + 1) % a.length]])
+  combs = a => a.flatMap((p1, i) => a.slice(i + 1).map(p2 => [p1, p2]))
+  eadd = (c1, c2) => c1.map((c, i) => c + c2[i])
+}
+if (!x && !y) {
+  do {
+    ls = pairs(arr([9], () => [rand(w), rand(h)]))
+  } while (combs(ls).some(([l1, l2]) => hasoverlap(l1, l2)))
+  poly = pnp(ls)
+  console.log(ls)
+}
+col = !i ? hex('eee') : eadd(rel(0, 0), [-20, -20, -22, 0])
+back = !i ? hex('fff') : rel(0, 0)
+return poly([x, y]) ? col : back</textarea>
         <textarea class="code">if (!x && !y && !i) {
   dst2 = (x1,y1) => (x2,y2) => (x2-x1)**2 + (y2-y1)**2
   dst = (x1,y1) => (x2,y2) => Math.sqrt(dst2(x1,y1)(x2,y2))
