@@ -95,6 +95,20 @@ up = rel(0, -1); left = rel(-1, 0)
 if ((!x && !y) || xor(eq(up, white), eq(left, white)))
   return white
 else return rgb(0, 0, 0)</textarea>
+        <textarea class="code">if (!x && !y) {
+ hill = (cx, cy, sx, sy, am) => (xi, yi) =>
+ 	am * Math.exp(-(((xi - cx) / sx)**2) -(((yi - cy) / sy)**2))
+ range = (locs) => {
+  hills = locs.map(l => hill(...l))
+  return (xi, yi) => hills.reduce((s,h) => s + h(xi, yi), 0)
+ }
+ rand = (n) => Math.floor(Math.random() * n)
+ tops = arr([80], () => [
+ 	rand(w), rand(h), 50, 50, 10
+ ])
+ myrange = range(tops)
+}
+return myrange(x, y) % 5 < 2 ? hex('F3DE2C') : hex('5C8001')</textarea>
         <textarea class="code">x=(x/w)-0.5;y=0.5-(y/h)
 r=Math.sqrt(x**2+y**2)*1.5
 t=Math.atan(y/x) + (x&lt0 ? Math.PI : (y&lt0 ? 2*Math.PI : 0))
